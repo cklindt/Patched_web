@@ -39,9 +39,6 @@ def admin_dashboard():
 @admin_bp.route('/admin_dashboard/system_monitor', methods=['GET', 'POST'])
 def system_monitor():
     user = get_user()
-
-    if user is None or not user.is_admin:
-        return redirect(url_for('login.login'))
     
     default_cmd = 'uptime'
     output = ""

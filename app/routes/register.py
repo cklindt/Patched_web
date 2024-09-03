@@ -16,27 +16,27 @@ def register():
             conn = get_db_connection()
             cur = conn.cursor()
             cur.execute(
-                f"""
-                SELECT COUNT(*) FROM users WHERE username = '{username}'
                 """
+                SELECT COUNT(*) FROM users WHERE username = %s
+                """, (username,)
             )
             count = cur.fetchone()[0]
 
             if count:
                 return render_template(
-                    "register.html", error=f"{username} already taken"
+                    "register.html", error=f"'{username}' already taken"
                 )
             
             cur.execute(
                 f"""
-                INSERT INTO users (username, password, role) VALUES ('{username}', '{password}', '{role}')
-                """
+                INSERT INTO users (username, password, role) VALUES (%s, %s, %s)
+                """, (username, password, role)
             )
             conn.commit()
             cur.close()
             conn.close()
 
-            return redirect(url_for('login.login'))
+            return render_template('register.html', success="User successfully created!")
         except Exception as e:
             logging.error(e)
             return render_template('register.html', error=e)
