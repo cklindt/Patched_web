@@ -1,0 +1,65 @@
+/* Ensure all cards are the same height */
+.card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Ensure card body stretches to fill available space */
+.card-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+/* Ensure cards have consistent height across rows */
+.card-fixed-height {
+    min-height: 300px; /* Adjust this value as needed */
+}
+
+/* Optional: Add spacing to button */
+.card-body .btn {
+    margin-top: auto; /* Push button to the bottom */
+}
+
+/* Ensure container has sufficient padding and margin */
+.container {
+    padding: 20px;
+    flex: 1;
+}
+
+/* Ensure row gap is consistent */
+.row {
+    margin-bottom: 1.5rem;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+    text-align: center;
+}
+.card-text {
+    font-size: 1rem;
+    text-align: center;
+}
+.card-img-top {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+h1 {
+    text-align: center;
+}
+
+footer {
+    padding: 1rem;
+    margin-top: auto;
+}

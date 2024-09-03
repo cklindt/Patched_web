@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Add Course - Cyber E-Learning{% endblock %}
+
+{% block content %}
+    <h1>Add a New Course</h1>
+    <form method="post" action="{{ url_for('courses.add_course') }}" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" class="form-control"></textarea>
+        </div>
+        <p>
+            <input type="file" id="image" name="image" accept="image/*">
+        </p>
+        <button type="submit" class="btn btn-primary">Add Course</button>
+    </form>
+
+    <hr>
+    <h2>Upload Course from XML</h2>
+    <form method="post" action="/process_xml" enctype="application/x-www-form-urlencoded">
+        <div class="form-group">
+            <label for="xml_data">XML Data:</label>
+            <input type="text" id="xml_data" name="xml_data" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+{% endblock %}
