@@ -60,21 +60,21 @@ def create_tables():
         INSERT INTO courses (title, description, instructor_id, image_path) VALUES
             ('Intro to Cybersecurity', 'Welcome to Introduction to Cybersecurity, an essential course designed 
             for individuals new to the field of cybersecurity. This course provides a foundational understanding 
-            of key concepts and practices critical to protecting digital information and systems from threats and vulnerabilities.', 2, 
+            of key concepts and practices critical to protecting digital information and systems from threats and vulnerabilities.', 5, 
             'images/intro.jpg'),
             ('Ethical Hacking and Penetration Testing', 'Explore the techniques and tools used by ethical hackers to identify and exploit 
             vulnerabilities in systems, networks, and applications. Learn about penetration testing methodologies, vulnerability assessment, 
-            and how to ethically simulate attacks to enhance security.', 2, 'images/hacking.jpg'),
+            and how to ethically simulate attacks to enhance security.', 5, 'images/hacking.jpg'),
             ('Incident Response and Management', 'Learn how to effectively respond to and manage cybersecurity incidents. Topics include incident 
-            detection, analysis, containment, eradication, and recovery, as well as creating and implementing an incident response plan.',2, 
+            detection, analysis, containment, eradication, and recovery, as well as creating and implementing an incident response plan.',5, 
             'images/incident.jpg'),
             ('Malware Analysis', 'Delve into the techniques used to analyze and understand malware. This course covers malware types, 
-            reverse engineering, and how to detect and mitigate malware threats.', 2, 'images/malware.jpg'),
+            reverse engineering, and how to detect and mitigate malware threats.', 5, 'images/malware.jpg'),
             ('Cybersecurity for IoT Devices', 'Focus on the unique security challenges posed by Internet of Things (IoT) devices. This course 
-            covers vulnerabilities, attack vectors, and best practices for securing IoT environments and devices.', 2, 'images/iot.jpg'),
+            covers vulnerabilities, attack vectors, and best practices for securing IoT environments and devices.', 5, 'images/iot.jpg'),
             ('Cloud Security', 'This course provides a foundational understanding of securing cloud environments, focusing on cloud architecture, 
             security controls, and compliance. You will learn to identify and mitigate cloud-specific threats, implement security best practices 
-            for cloud services, and manage risks associated with cloud computing.', 2, 'images/cloud.jpg')
+            for cloud services, and manage risks associated with cloud computing.', 5, 'images/cloud.jpg')
         """
     )
 

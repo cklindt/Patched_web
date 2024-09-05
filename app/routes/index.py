@@ -25,10 +25,8 @@ def index():
                             """
                         )
                         search_results = cur.fetchall()
-                        print("Search Results:", search_results)  # Debug print
             except Exception as e:
-                print("Error:", e)  # Debug print
-
+                print("Error:", e)
     try:
         with get_db_connection() as conn:
             with conn.cursor() as cur:

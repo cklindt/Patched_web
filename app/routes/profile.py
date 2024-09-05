@@ -13,16 +13,24 @@ def profile():
 
     with get_db_connection() as conn:
         with conn.cursor() as cur:
-            # Fetch enrolled courses
-            cur.execute("""
-                SELECT c.course_id, c.title, c.description, c.image_path
-                FROM enrollments e
-                JOIN courses c ON e.course_id = c.course_id
-                WHERE e.student_id = (SELECT user_id FROM users WHERE username = %s)
-            """, (user.username,))
-            enrolled_courses = cur.fetchall()
+            if user.role == 'instructor':
+                cur.execute("""
+                    SELECT c.course_id, c.title, c.description, c.image_path
+                    FROM courses c
+                    WHERE c.instructor_id = (SELECT user_id FROM users WHERE username = %s)
+                """, (user.username,))
+                courses = cur.fetchall()
+            else:
+                # Fetch enrolled courses
+                cur.execute("""
+                    SELECT c.course_id, c.title, c.description, c.image_path
+                    FROM enrollments e
+                    JOIN courses c ON e.course_id = c.course_id
+                    WHERE e.student_id = (SELECT user_id FROM users WHERE username = %s)
+                """, (user.username,))
+                courses = cur.fetchall()
 
-    return render_template('profile.html', user=user, courses=enrolled_courses)
+    return render_template('profile.html', user=user, courses=courses)
 
 @profile_bp.route('/profile/edit', methods=['GET', 'POST'])
 def edit_profile():

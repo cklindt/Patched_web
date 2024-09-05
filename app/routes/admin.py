@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, redirect, url_for, render_template_string
+from flask import Blueprint, request, render_template, redirect, url_for, render_template_string, flash
 import subprocess
 from .session import get_user
 import logging
@@ -18,9 +18,8 @@ def admin_dashboard():
         try:
             with get_db_connection() as conn:
                 with conn.cursor() as cur:
-                    cur.execute(f"DELETE FROM users WHERE user_id = '{user_id}'")
+                    cur.execute(f"DELETE FROM users WHERE user_id = %s", (user_id,))
                     conn.commit()
-                    cur.close()
         except Exception as e:
             logging.error(e) 
             return redirect(url_for('index.index'))
@@ -28,7 +27,7 @@ def admin_dashboard():
     try:
         with get_db_connection() as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT user_id, username, password, role FROM users")
+                cur.execute("SELECT user_id, username, password, role FROM users ORDER BY user_id")
                 users = cur.fetchall()
     except Exception as e:
         logging.error(e)
@@ -109,3 +108,71 @@ def system_monitor():
 
 #     return render_template('admin_dashboard.html', user=user, message=message)
 
+@admin_bp.route('/admin_dashboard/add_user', methods=['GET', 'POST'])
+def add_user():
+    user = get_user()
+
+    if user is None or not user.is_admin:
+        return redirect(url_for('login.login'))
+    
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        role = request.form.get('role')
+
+        if not username or not password or not role:
+            #logging.error(f"User: {username}, Pass: {password}, Role: {role}")
+            flash('Please provide all required fields', 'danger')
+            return render_template('add_user.html', user=user)
+        
+        try:
+            with get_db_connection() as conn:
+                with conn.cursor() as cur:
+                    cur.execute("""
+                    INSERT INTO users (username, password, role) 
+                    VALUES (%s, %s, %s)            
+                    """, (username, password, role))
+                    conn.commit()
+                    flash('User add successfully', 'success')
+                    return render_template('add_user.html', user=user)
+        except Exception as e:
+            flash(f'An error occured: {e}', 'danger')
+        
+    return render_template('add_user.html', user=user)
+                    
+@admin_bp.route('/admin_dashboard/edit/<int:user_id>', methods=['GET', 'POST'])
+def edit_user(user_id):
+    user = get_user()
+
+    if user is None or not user.is_admin:
+        return redirect(url_for('login.login'))
+    
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        role = request.form.get('role')
+
+        try:
+            with get_db_connection() as conn:
+                with conn.cursor() as cur:
+                    cur.execute("""
+                    UPDATE users SET username = %s, password = %s, role = %s WHERE user_id = %s
+                    """, (username, password, role, user_id))
+                    conn.commit()
+                    flash("User updated successfully", 'success')
+                    return redirect(url_for('admin.admin_dashboard'))
+        except Exception as e:
+            flash(f"Error occured while updating user: {e}", 'danger')
+            return render_template('admin_dashboard.html')
+          
+    try:
+        with get_db_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT username, password, role FROM users WHERE user_id = %s", (user_id,))
+                user_data = cur.fetchone()
+    except Exception as e:
+        logging.error(e)
+        flash(f'An error occured while fetching user data: {e}')
+        return redirect(url_for('admin_dashboard.html'))
+        
+    return render_template('edit_user.html', user=user, user_id=user_id, user_data=user_data)

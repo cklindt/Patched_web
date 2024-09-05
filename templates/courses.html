@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Courses - Cyber E-Learning{% endblock %}
+{% block title %}Courses{% endblock %}
 
 {% block content %}
     <h1>Our Courses</h1>    
@@ -24,6 +24,9 @@
                                 <div class="mt-auto"></div>
                                 {% if user and user.role == 'student' %}
                                     <a href="{{ url_for('courses.enroll', course_id=course[0]) }}" class="btn btn-success">Enroll</a> <!-- Enroll Button -->
+                                {% endif %}
+                                {% if user and user.role == 'instructor' or user.role == 'admin' %}
+                                    <a href="{{ url_for('courses.remove_course', course_id=course[0]) }}" class="btn btn-danger">Remove</a>
                                 {% endif %}
                             </div>
                         </div>

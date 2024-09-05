@@ -98,7 +98,6 @@ def add_course():
         return redirect(url_for('courses.courses'))
 
     if request.method == 'POST':
-        
         title = request.form['title']
         description = request.form['description']
         instructor_id = user.user_id
@@ -121,10 +120,19 @@ def add_course():
                     """
                 )
                 conn.commit()
-
-        return redirect(url_for('courses.courses'))
+        flash('Course added successfully', 'success')
+        return render_template('add_course.html')
     
-    return render_template('add_course.html', user=user)
+    try:
+        with get_db_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT user_id, username FROM users WHERE role = 'instructor'")
+                instructors = cur.fetchall()
+    except Exception as e:
+        flash(f"An error occured while fetching instructors: {e}", 'danger')
+        instructors = []
+
+    return render_template('add_course.html', user=user, instructors=instructors)
         
 @course_bp.route('/enroll/<int:course_id>')
 def enroll(course_id):
@@ -147,8 +155,8 @@ def enroll(course_id):
 
     return redirect(url_for('courses.courses'))
 
-@course_bp.route('/remove/<int:course_id>')
-def remove_course(course_id):
+@course_bp.route('/unroll/<int:course_id>')
+def unroll(course_id):
     user = get_user()
 
     student_id = user.user_id
@@ -164,3 +172,18 @@ def remove_course(course_id):
             conn.commit()
 
     return redirect(url_for('profile.profile'))
+
+@course_bp.route('/remove_course/<int:course_id>')
+def remove_course(course_id):
+    user = get_user()
+
+    if user is None:
+        return redirect(url_for('index.index'))
+    
+
+    with get_db_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("DELETE FROM courses WHERE course_id = %s", (course_id,))
+            conn.commit()
+        
+    return redirect(url_for('courses.courses'))

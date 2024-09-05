@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, redirect, url_for, render_template_string
+from flask import Blueprint, request
 from lxml import etree
 
 endpoint_bp = Blueprint("endpoint", __name__)
@@ -20,5 +20,4 @@ def process_xml():
             return f"Error processing XML: {str(e)}"
         
     return "No XML data provided"
-
 

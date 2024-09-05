@@ -32,11 +32,13 @@
                         <a class="nav-link" href="/profile">Profile</a>
                     </li>
                     {% if user.role == 'admin' %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="/admin_dashboard">Admin Dashboard</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/admin_dashboard/system_monitor">System Monitor</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link" href="#" id="adminLink">Admin</a>
+                            <div class="dropdown-menu" id="adminMenu">
+                                <a class="dropdown-item" href="{{ url_for('admin.admin_dashboard')}}">Dashboard</a>
+                                <a class="dropdown-item" href="{{ url_for('admin.system_monitor') }}">SysMonitor</a>
+                                <a class="dropdown-item" href="{{ url_for('admin.add_user') }}">Add User</a>
+                            </div>
                         </li>
                     {% endif %}
                     <li class="nav-item">
@@ -72,5 +74,24 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.getElementById('adminLink').addEventListener('click', function(event) {
+            event.preventDefault();
+
+            var dropdownMenu = document.getElementById('adminMenu');
+            dropdownMenu.classList.toggle('show');
+        });
+
+        document.addEventListener('click', function(event){ 
+            var isClickInside = document.querySelector('.nav-item.dropdown').contains(event.target);
+
+            if (!isClickInside) {
+                var dropdownMenu = document.getElementById('adminMenu');
+                if (dropdownMenu.classList.contains('show')) {
+                    dropdownMenu.classList.remove('show');
+                }
+            }
+        });
+    </script>
 </body>
 </html>
