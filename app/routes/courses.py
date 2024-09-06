@@ -54,7 +54,7 @@ def search_course():
     template_string = """
     {% extends "base.html" %}
 
-    {% block title %}Search - Cyber E-Learning{% endblock %}
+    {% block title %}Course Suggestions{% endblock %}
 
     {% block content %}
     <div class="container mt-5">
@@ -71,17 +71,17 @@ def search_course():
             {% endif %}
         {% endwith %}
 
-        <h1>Search Course</h1>
+        <h1>Suggest Course</h1>
         <form method="post" action="{{ url_for('courses.search_course') }}">
             <div class="form-group">
-                <label for="search_query">Search:</label>
-                <input id="search_query" name="search_query" class="form-control" type="text" placeholder="Enter course name..." required>
+                <label for="search_query">Course Topic:</label>
+                <input id="search_query" name="search_query" class="form-control" type="text" placeholder="Enter course topic..." required>
             </div>
             <button type="submit" class="btn btn-primary">Search</button>
         </form>
 
         {% if search_result %}
-            <h2 class="mt-5">Search Result</h2>
+            <h2 class="mt-5">Sending suggestion to admin email</h2>
             <p>""" + str(search_result) + """</p>
         {% endif %}
     </div>
@@ -121,7 +121,7 @@ def add_course():
                 )
                 conn.commit()
         flash('Course added successfully', 'success')
-        return render_template('add_course.html')
+        return render_template('add_course.html', user=user)
     
     try:
         with get_db_connection() as conn:
@@ -173,7 +173,7 @@ def unroll(course_id):
 
     return redirect(url_for('profile.profile'))
 
-@course_bp.route('/remove_course/<int:course_id>')
+@course_bp.route('/remove_course/<int:course_id>', methods=['GET', 'POST'])
 def remove_course(course_id):
     user = get_user()
 
@@ -185,5 +185,8 @@ def remove_course(course_id):
         with conn.cursor() as cur:
             cur.execute("DELETE FROM courses WHERE course_id = %s", (course_id,))
             conn.commit()
-        
-    return redirect(url_for('courses.courses'))
+
+    if user.is_admin:
+        return redirect(url_for('admin.admin_dashboard'))
+    else:   
+        return redirect(url_for('courses.courses'))

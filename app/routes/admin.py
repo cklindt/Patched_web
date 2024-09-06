@@ -1,13 +1,13 @@
 from flask import Blueprint, request, render_template, redirect, url_for, render_template_string, flash
 import subprocess
-from .session import get_user
 import logging
+
+from .session import get_user
 from app.database import get_db_connection
 
 admin_bp = Blueprint("admin", __name__)
 
 @admin_bp.route('/admin_dashboard', methods=['GET', 'POST'])
-@admin_bp.route('/admin_dashboard.html', methods=['GET', 'POST'])
 def admin_dashboard():
     user = get_user()
     if user is None or not user.is_admin:
@@ -21,19 +21,25 @@ def admin_dashboard():
                     cur.execute(f"DELETE FROM users WHERE user_id = %s", (user_id,))
                     conn.commit()
         except Exception as e:
-            logging.error(e) 
-            return redirect(url_for('index.index'))
+            logging.error(e)
+            flash(f"An error occurred: {e}", "danger")
+            return redirect(url_for('admin.admin_dashboard'))
         
     try:
         with get_db_connection() as conn:
             with conn.cursor() as cur:
                 cur.execute("SELECT user_id, username, password, role FROM users ORDER BY user_id")
                 users = cur.fetchall()
+
+                # Fetch courses
+                cur.execute("SELECT course_id, title, description, instructor_id FROM courses ORDER BY course_id")
+                courses = cur.fetchall()
     except Exception as e:
         logging.error(e)
         users = []
+        courses = []
 
-    return render_template('admin_dashboard.html', user=user, users=users)
+    return render_template('admin_dashboard.html', user=user, users=users, courses=courses)
 
 @admin_bp.route('/admin_dashboard/system_monitor', methods=['GET', 'POST'])
 def system_monitor():
@@ -83,30 +89,6 @@ def system_monitor():
     """
 
     return render_template_string(template_string, output=output, user=user)
-
-# @admin_bp.route('/admin_dashboard/add_course', methods=['POST'])
-# def add_course():
-#     user = get_user()
-#     if user is None or not user.is_admin:
-#         return redirect(url_for('login.login'))
-    
-#     course_name = request.form.get('course_name', '')
-#     course_description = request.form.get('course_description', '')
-
-#     try:
-#         with get_db_connection() as conn:
-#             with conn.cursor() as cur:
-#                 query = f"""
-#                 INSERT INTO courses (title, description, instructor_id) VALUES ('{course_name}', '{course_description}', 2)
-#                 """
-#                 cur.execute(query=query)
-#                 conn.commit()
-#                 message = "Course added successfully!"
-#     except Exception as e:
-#         logging.error(f"An error occurred while adding the course: {e}")
-#         message = f"Error: {e}"
-
-#     return render_template('admin_dashboard.html', user=user, message=message)
 
 @admin_bp.route('/admin_dashboard/add_user', methods=['GET', 'POST'])
 def add_user():

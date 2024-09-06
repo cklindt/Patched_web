@@ -31,7 +31,7 @@
     {% if user.role == 'instructor' %}
         <h2 class="mt-4">Courses You Are Teaching</h2>
         <a href="{{ url_for('courses.add_course') }}" class="btn btn-success mb-3 btn-block">Add New Course</a>
-        <div class="row">
+        <div class="row justify-content-center">
             {% if courses %}
                 {% for course in courses %}
                     <div class="col-md-4 mb-3">
@@ -49,8 +49,8 @@
             {% endif %}
         </div>
     {% elif user.role == 'student' %}
-        <h2 class="mt-4">Enrolled Courses</h2>
-        <div class="row">
+        <h2 class="mt-4 text-center">Enrolled Courses</h2>
+        <div class="row justify-content-center">
             {% if courses %}
                 {% for course in courses %}
                     <div class="col-md-4 mb-3">
@@ -69,7 +69,6 @@
                 <p>You are not enrolled in any courses.</p>
             {% endif %}
         </div>
-        <a href="{{ url_for('courses.courses') }}" class="btn btn-primary mt-4">Browse Courses</a>
     {% endif %}
 </div>
 {% endblock %}

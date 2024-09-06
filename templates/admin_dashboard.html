@@ -4,6 +4,17 @@
 
 {% block content %}
 <div class="container mt-5">
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            <div class="alert-container">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
     <h2>User Management</h2>
     <a href="{{ url_for('admin.add_user') }}" class="btn btn-primary mb-2">Add User</a>
    <!-- Table -->
@@ -28,6 +39,36 @@
                     <a href="{{ url_for('admin.edit_user', user_id=user[0]) }}" class="btn btn-info btn-sm">Edit</a>
                     <form method="POST" action="{{ url_for('admin.admin_dashboard') }}" style="display:inline;">
                         <input type="hidden" name="user_id" value="{{ user[0] }}">
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <!-- Course -->
+    <h2>Course Management</h2>
+    <a href="{{ url_for('courses.add_course') }}" class="btn btn-primary mb-2">Add Course</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Instructor ID</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for course in courses %}
+            <tr>
+                <td>{{ course[0] }}</td>
+                <td>{{ course[1] }}</td>
+                <td>{{ course[2] }}</td>
+                <td>{{ course[3] }}</td>
+                <td>
+                    <form method="POST" action="{{ url_for('courses.remove_course', course_id=course[0]) }}" style="display:inline;">
+                        <input type="hidden" name="course_id" value="{{ course[0] }}">
                         <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                     </form>
                 </td>
