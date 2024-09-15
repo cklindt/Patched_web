@@ -211,3 +211,10 @@ h1 {
     color: #155724; /* Dark green text */
     border: 1px solid #c3e6cb; /* Light green border */
 }
+
+/* Pagination */
+.page-link {
+    color: #155724;
+    background-color: #000000;
+    border-color: #000000;
+}

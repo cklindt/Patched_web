@@ -25,11 +25,22 @@ def admin_dashboard():
             flash(f"An error occurred: {e}", "danger")
             return redirect(url_for('admin.admin_dashboard'))
         
+    # Pagination handling
+    page = request.args.get('page', 1, type=int)
+    per_page = 10
+
+    start_index = (page - 1) * per_page + 1
+    end_index = start_index + per_page - 1
+
     try:
         with get_db_connection() as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT user_id, username, password, role FROM users ORDER BY user_id")
+                cur.execute("SELECT user_id, username, password, role FROM users WHERE user_id BETWEEN %s AND %s ORDER BY user_id ", (start_index, end_index))
                 users = cur.fetchall()
+
+                cur.execute("SELECT COUNT(*) FROM users")
+                total_users = cur.fetchone()[0]
+                total_pages = (total_users + per_page - 1) // per_page
 
                 # Fetch courses
                 cur.execute("SELECT course_id, title, description, instructor_id FROM courses ORDER BY course_id")
@@ -38,8 +49,9 @@ def admin_dashboard():
         logging.error(e)
         users = []
         courses = []
+        total_pages = 1
 
-    return render_template('admin_dashboard.html', user=user, users=users, courses=courses)
+    return render_template('admin_dashboard.html', user=user, users=users, courses=courses, total_pages=total_pages, current_page=page)
 
 @admin_bp.route('/admin_dashboard/system_monitor', methods=['GET', 'POST'])
 def system_monitor():
