@@ -13,13 +13,16 @@ def admin_dashboard():
     if user is None or not user.is_admin:
         return redirect(url_for('login.login'))
     
+    search_query = request.args.get('search', '')
+
     if request.method == 'POST':
         user_id = request.form['user_id']
         try:
             with get_db_connection() as conn:
                 with conn.cursor() as cur:
-                    cur.execute(f"DELETE FROM users WHERE user_id = %s", (user_id,))
+                    cur.execute("DELETE FROM users WHERE user_id = %s", (user_id,))
                     conn.commit()
+            flash("User deleted successfully.", "success")
         except Exception as e:
             logging.error(e)
             flash(f"An error occurred: {e}", "danger")
@@ -29,16 +32,38 @@ def admin_dashboard():
     page = request.args.get('page', 1, type=int)
     per_page = 10
 
-    start_index = (page - 1) * per_page + 1
-    end_index = start_index + per_page - 1
+    # Calculate start index for pagination
+    start_index = (page - 1) * per_page
 
     try:
         with get_db_connection() as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT user_id, username, password, role FROM users WHERE user_id BETWEEN %s AND %s ORDER BY user_id ", (start_index, end_index))
+                # Check if there is a search query
+                if search_query:
+                    # Fetch users based on the search query
+                    cur.execute("""
+                        SELECT user_id, username, password, role 
+                        FROM users 
+                        WHERE username ILIKE %s 
+                        ORDER BY user_id 
+                        LIMIT %s OFFSET %s
+                    """, (f"%{search_query}%", per_page, start_index))
+                else:
+                    # Fetch all users if no search query
+                    cur.execute("""
+                        SELECT user_id, username, password, role 
+                        FROM users 
+                        ORDER BY user_id 
+                        LIMIT %s OFFSET %s
+                    """, (per_page, start_index))
+
                 users = cur.fetchall()
 
-                cur.execute("SELECT COUNT(*) FROM users")
+                # Count total users based on search query or all users
+                if search_query:
+                    cur.execute("SELECT COUNT(*) FROM users WHERE username ILIKE %s", (f"%{search_query}%",))
+                else:
+                    cur.execute("SELECT COUNT(*) FROM users")
                 total_users = cur.fetchone()[0]
                 total_pages = (total_users + per_page - 1) // per_page
 
@@ -51,7 +76,7 @@ def admin_dashboard():
         courses = []
         total_pages = 1
 
-    return render_template('admin_dashboard.html', user=user, users=users, courses=courses, total_pages=total_pages, current_page=page)
+    return render_template('admin_dashboard.html', user=user, users=users, courses=courses, total_pages=total_pages, current_page=page, search_query=search_query)
 
 @admin_bp.route('/admin_dashboard/system_monitor', methods=['GET', 'POST'])
 def system_monitor():

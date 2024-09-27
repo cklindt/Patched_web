@@ -1,6 +1,7 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash
+from flask import Blueprint, render_template, redirect, url_for, request, flash, current_app
 from .session import get_user
 import logging
+import os, subprocess
 from app.database import get_db_connection
 
 profile_bp = Blueprint("profile", __name__)
@@ -81,3 +82,79 @@ def edit_profile():
             return "An error occured while fetching user data.", 500
         
     return render_template('edit_profile.html', user=user_info)
+
+@profile_bp.route('/upload', methods=['GET', 'POST'])
+def upload_file():
+    user = get_user()
+
+    if user is None:
+        return redirect(url_for('login.login'))
+    
+    upload_dir = os.path.join(current_app.root_path, 'uploads')
+    uploaded_files = os.listdir(os.path.join(upload_dir))
+
+    if request.method == 'POST':
+        file = request.files['file']
+
+        try:
+            if file and file.filename:
+                filename = file.filename
+                file.save(os.path.join(upload_dir, filename))
+
+                flash('File uploaded successfully', 'success')
+            else:
+                flash('No file selected', 'danger')
+
+        except Exception as e:
+            flash(f'Error uploading file: {e}', 'danger')
+
+        return redirect(url_for('profile.upload_file'))
+    
+    return render_template('upload.html', user=user, uploaded_files=uploaded_files)
+
+@profile_bp.route('/run/<filename>', methods=['POST'])
+def run_file(filename):
+    user = get_user()
+
+    # Set upload variables
+    upload_dir = os.path.join(current_app.root_path, 'uploads')
+    file_path = os.path.join(upload_dir, filename)
+
+    try:
+        _, file_extension = os.path.splitext(filename)
+
+        if file_extension == '.php':
+            output = subprocess.check_output(['php', file_path], stderr=subprocess.STDOUT, text=True)
+        elif file_extension == '.sh':
+            output = subprocess.check_output(['bash', file_path], subprocess.STDOUT, text=True)
+        elif file_extension == '.py':
+            output = subprocess.check_output(['python', file_path], subprocess.STDOUT, text=True)
+        else:
+            flash(f'{file_extension} is not supported yet', 'warning')
+            return redirect(url_for('profile.upload_file'))
+        
+        flash('File executed successfully', 'success')
+        
+    except Exception as e:
+        flash(f'Error executing script: {e}', 'danger')
+        return redirect(url_for('profile.upload_file'))
+    
+    return render_template('upload.html', success='File executed correctly', output=output, uploaded_files=os.listdir(upload_dir), user=user)
+    
+@profile_bp.route('/delete/<filename>', methods=['POST'])
+def delete_file(filename):
+    # Set upload variables    
+    upload_dir = os.path.join(current_app.root_path, 'uploads')
+    file_path = os.path.join(upload_dir, filename)
+
+    try:
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            flash('File deleted successfully', 'success')
+        else:
+            flash('File not found', 'danger')
+
+    except Exception as e:
+        flash(f'File could not be deleted: {e}', 'danger')
+
+    return redirect(url_for('profile.upload_file'))

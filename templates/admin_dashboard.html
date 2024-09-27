@@ -19,6 +19,16 @@
     <h2>User Management</h2>
     <a href="{{ url_for('admin.add_user') }}" class="btn btn-primary mb-2">Add User</a>
     
+    <!-- Search Form -->
+    <form method="GET" action="{{ url_for('admin.admin_dashboard') }}" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="search" class="form-control" placeholder="Search for users" value="{{ search_query }}">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="submit">Search</button>
+            </div>
+        </div>
+    </form>
+
     <!-- Table -->
     <table class="table table-striped">
         <thead>
