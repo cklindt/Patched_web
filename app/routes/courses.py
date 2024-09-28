@@ -81,7 +81,7 @@ def search_course():
         </form>
 
         {% if search_result %}
-            <h2 class="mt-5">Sending suggestion to admin email</h2>
+            <h2 class="mt-5">Suggesstion:</h2>
             <p>""" + str(search_result) + """</p>
         {% endif %}
     </div>

