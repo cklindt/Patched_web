@@ -94,3 +94,9 @@ Methods: `GET`
 http://127.0.0.1/endpoint?command=whoami
 curl -s http://127.0.0.1:8000/endpoint?command=cat+/etc/passwd | jq -r '.status[]'
 ```
+
+### Unrestricted File Upload
+Path: `/upload`
+Methods: `GET, POST`
+
+Can upload files to server with any extension. Once uploaded, you can execute the file it is has (*.php, .py, .sh*) extensions or delete the file.
