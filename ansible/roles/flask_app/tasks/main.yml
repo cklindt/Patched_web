@@ -10,7 +10,7 @@
 
 - name: Create app directory on remote host
   file:
-    path: "/var/www/{{ web_app_name }}"
+    path: "/var/lib/{{ web_app_name }}"
     state: directory
     owner: root
     group: root
@@ -19,7 +19,7 @@
 - name: Copy code to remote host
   copy:
     src: "../../{{ item }}"
-    dest: "/var/www/{{ web_app_name }}"
+    dest: "/var/lib/{{ web_app_name }}/"
     owner: root
     group: root
     mode: '0755'
@@ -34,11 +34,11 @@
 - name: Create .env file
   template:
     src: env.j2
-    dest: "/var/www/{{ web_app_name }}/.env"
+    dest: "/var/lib/{{ web_app_name }}/.env"
 
 - name: Install Python Packages
   pip:
-    requirements: "/var/www/{{ web_app_name }}/requirements.txt"
+    requirements: "/var/lib/{{ web_app_name }}/requirements.txt"
 
 - name: Create systemd service file
   template:
