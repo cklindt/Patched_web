@@ -38,6 +38,7 @@ def create_app():
         profile_bp,
         course_bp,
         endpoint_bp,
+        forgot_pass_bp,
     )
 
     app.register_blueprint(index_bp)
@@ -48,5 +49,6 @@ def create_app():
     app.register_blueprint(profile_bp)
     app.register_blueprint(course_bp)
     app.register_blueprint(endpoint_bp)
+    app.register_blueprint(forgot_pass_bp)
 
     return app

@@ -6,3 +6,4 @@ from .logout import logout_bp
 from .profile import profile_bp
 from .courses import course_bp
 from .endpoint import endpoint_bp
+from .forgot_password import forgot_pass_bp
