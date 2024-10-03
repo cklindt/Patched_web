@@ -88,6 +88,12 @@ cat /etc/passwd
 ```
 ![Command Injection](assets/command_injection.png)
 
+### Forgot Password
+Path: `/forgot_password`
+Methods: `GET, POST`
+Anyone can change password to any user since it doesn't authenticate existing user.
+![](assets/forgot_password.png)
+
 ### Command Injection via API endpoint
 Path: `/endpoint`
 Methods: `POST`
