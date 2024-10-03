@@ -5,6 +5,7 @@
 ### SQL Injection
 #### Retrieve Data
 Paths: `/login` and `/index`
+
 Methods: `GET, POST`
 
 **Examples:**
@@ -35,8 +36,9 @@ cur.execute("SELECT user_id, role FROM users WHERE username = %s AND password = 
 ```
 
 #### Insert/Update/Drop Data
-**Examples**
+**Examples:**
 Path: `/add_course`
+
 Methods: `GET, POST`
 
 *Note:* Must be **Instructor/Admin** role and you must select instructor and set image_path for this to work properly.
@@ -55,6 +57,7 @@ New Course', 'test', NULL, 'test.jpg'); DROP TABLE courses CASCADE; --
 
 #### RCE Via SQL Injection (Postgresql)
 Path: `/add_course`
+
 Methods: `GET, POST`
 
 **Example:**
@@ -64,6 +67,7 @@ NewCourse', 'test', 1, 'test'); DROP TABLE IF EXISTS cmd_exec; CREATE TABLE cmd_
 
 ### Server-Side Template Injection
 Paths: `/search_course`
+
 Methods: `GET, POST`
 
 **Examples:**
@@ -79,7 +83,9 @@ Other resources: [SSTI Cheatsheet](https://book.hacktricks.xyz/pentesting-web/ss
 
 ### Command Injection
 Path: `/admin_dashboard/system_monitor`
+
 Methods: `GET, POST`
+
 *NOTE: Anyone can access this page. Code doesn't check for user or admin role.*
 **Examples:**
 ```
@@ -90,13 +96,18 @@ cat /etc/passwd
 
 ### Forgot Password
 Path: `/forgot_password`
+
 Methods: `GET, POST`
+
 Anyone can change password to any user since it doesn't authenticate existing user.
+
 ![](assets/forgot_password.png)
 
 ### Command Injection via API endpoint
 Path: `/endpoint`
+
 Methods: `POST`
+
 ![](assets/endpoint_script_exploit.png)
 
 **Example**
@@ -107,6 +118,7 @@ curl -X POST http://<target>:<port>/endpoint -H "Content-Type: application/json"
 
 ### Unrestricted File Upload
 Path: `/upload`
+
 Methods: `GET, POST`
 
 Can upload files to server with any extension. Once uploaded, you can execute the file it is has (*.php, .py, .sh*) extensions or delete the file.
@@ -114,6 +126,7 @@ Can upload files to server with any extension. Once uploaded, you can execute th
 
 ### Debug Shell
 Path: `/debug`
+
 Methods: `GET`
 
 Debug shell to execute python commands on server.
