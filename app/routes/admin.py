@@ -140,7 +140,6 @@ def add_user():
         role = request.form.get('role')
 
         if not username or not password or not role:
-            #logging.error(f"User: {username}, Pass: {password}, Role: {role}")
             flash('Please provide all required fields', 'danger')
             return render_template('add_user.html', user=user)
         
