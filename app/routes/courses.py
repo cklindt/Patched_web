@@ -180,6 +180,7 @@ def remove_course(course_id):
     if user is None:
         return redirect(url_for('index.index'))
     
+    referrer = request.referrer
 
     with get_db_connection() as conn:
         with conn.cursor() as cur:
@@ -187,6 +188,7 @@ def remove_course(course_id):
             conn.commit()
 
     if user.is_admin:
-        return redirect(url_for('admin.admin_dashboard'))
-    else:   
-        return redirect(url_for('courses.courses'))
+        if referrer and 'admin_dashboard' in referrer:
+            return redirect(url_for('admin.admin_dashboard'))
+        
+    return redirect(url_for('courses.courses'))
