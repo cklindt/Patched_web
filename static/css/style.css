@@ -218,3 +218,10 @@ h1 {
     background-color: #000000;
     border-color: #000000;
 }
+
+.logo {
+    display: block;
+    margin: auto;
+    width: 250px;
+    height: 200px;
+}
