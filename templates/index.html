@@ -22,7 +22,7 @@
         <div class="container mt-4">
             <h2 style="text-align: center;">Search Results</h2>
             {% for course in search_results %}
-                <p class="index_results"><strong>{{ course[0] }}</strong>: {{ course[1] }}</p>
+                <p class="index_results"><strong>({{ course[0] }}) {{ course[1] }}</strong>: {{ course[2] }}</p>
             {% endfor %}
         </div>
     {% else %}
