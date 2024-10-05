@@ -21,7 +21,7 @@ def index():
                     with conn.cursor() as cur:
                         cur.execute(
                             f"""
-                            SELECT title, description FROM courses WHERE title LIKE '{search_query}%'
+                            SELECT course_id, title, description FROM courses WHERE title LIKE '{search_query}%'
                             """
                         )
                         search_results = cur.fetchall()
