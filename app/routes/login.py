@@ -42,7 +42,10 @@ def login():
             conn.commit()
             cur.close()
 
-            response = redirect(url_for('profile.profile'))
+            if user_info[1] == 'admin':
+                response = redirect(url_for('admin.admin_dashboard'))
+            else:
+                response = redirect(url_for('profile.profile'))
             response.set_cookie("session_id", session_id, expires=expiration_time)
             return response
             
