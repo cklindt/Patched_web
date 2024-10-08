@@ -40,6 +40,8 @@ def courses():
 
 @course_bp.route('/search_course', methods=['GET', 'POST'])
 def search_course():
+    user = get_user()
+
     search_result = None
     
     if request.method == 'POST':
@@ -88,7 +90,7 @@ def search_course():
     {% endblock %}
     """
 
-    return render_template_string(template_string, search_result=search_result)
+    return render_template_string(template_string, search_result=search_result, user=user)
 
 @course_bp.route("/add_course", methods=['GET', 'POST'])
 def add_course():
