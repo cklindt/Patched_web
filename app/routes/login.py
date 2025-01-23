@@ -1,8 +1,7 @@
 from flask import Blueprint, render_template, url_for, request, redirect
 import uuid, logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
-from .session import get_user
 from app.database import get_db_connection
 
 login_bp = Blueprint("login", __name__)
@@ -10,8 +9,6 @@ login_bp = Blueprint("login", __name__)
 @login_bp.route('/login', methods=['GET', 'POST'])
 @login_bp.route('/login.html', methods=['GET', 'POST'])
 def login():
-    user = get_user()
-
     if request.method == 'POST':
         try:
             username = request.form['username']
@@ -32,8 +29,8 @@ def login():
 
             user_id, role = user_info
             session_id = uuid.uuid4().hex
-            expiration_time = datetime.now() + timedelta(hours=6)
-
+            expiration_time = datetime.now(timezone.utc) + timedelta(hours=6)
+            
             cur.execute(
                 f"""
                 INSERT INTO sessions (session_id, user_id, expiration) VALUES ('{session_id}', '{user_id}', '{expiration_time}');

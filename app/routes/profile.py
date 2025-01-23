@@ -153,8 +153,8 @@ def delete_file(filename):
             flash('File deleted successfully', 'success')
         else:
             flash('File not found', 'danger')
-
+        
     except Exception as e:
         flash(f'File could not be deleted: {e}', 'danger')
-
+    
     return redirect(url_for('profile.upload_file'))
