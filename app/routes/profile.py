@@ -98,13 +98,16 @@ def upload_file():
         file = request.files['file']
 
         try:
-            if file and file.filename:
-                filename = file.filename
-                file.save(os.path.join(upload_dir, filename))
-
-                flash('File uploaded successfully', 'success')
-            else:
-                flash('No file selected', 'danger')
+            allowed_extensions = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'csv', 'xlsx'}
+            file_ext = os.path.splitext(file.filename)[1][1:].lower()
+            if file_ext not in allowed_extensions:
+                flash(f'File type .{file_ext} is not allowed', 'danger')
+                return redirect(url_for('profile.upload_file'))
+            import uuid 
+            random_filename = f"{uuid.uuid4().hex}.{file_ext}"
+            file_path = os.path.join(upload_dir, random_filename)
+            file.save(file_path)
+            flash('File uploaded successfully', 'success')
 
         except Exception as e:
             flash(f'Error uploading file: {e}', 'danger')
