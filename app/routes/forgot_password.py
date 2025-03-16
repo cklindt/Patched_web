@@ -29,9 +29,10 @@ def forgot_password():
                 with conn.cursor() as cur:
                     # Check current password
                     cur.execute(
-                        f"""
-                        SELECT password FROM users WHERE username = '{username}'
                         """
+                        SELECT password FROM users WHERE username = %s
+                        """,
+                        (username,)
                     )
                     c_password = cur.fetchone()[0]
 
@@ -39,9 +40,10 @@ def forgot_password():
                         return render_template('forgot_password.html', error='Password cannot be old password')
                     else:
                         cur.execute(
-                            f"""
-                            UPDATE users SET password = '{password}' WHERE username = '{username}'
                             """
+                            UPDATE users SET password = %s WHERE username = %s
+                            """,
+                            (password,username)
                         )
                         conn.commit()
 

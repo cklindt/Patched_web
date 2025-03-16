@@ -17,10 +17,12 @@ def login():
             conn = get_db_connection()
             cur = conn.cursor()
             cur.execute(
-                f"""
-                SELECT user_id, role FROM users WHERE username = '{username}' AND password = '{password}'
-                """
-            )
+                        """
+                            SELECT user_id, role FROM users WHERE username = %s AND password = %s
+                                """, 
+                                    (username, password)
+                                    )
+
             user_info = cur.fetchone()
 
             if user_info is None:
@@ -33,8 +35,8 @@ def login():
             
             cur.execute(
                 f"""
-                INSERT INTO sessions (session_id, user_id, expiration) VALUES ('{session_id}', '{user_id}', '{expiration_time}');
-                """
+                INSERT INTO sessions (session_id, user_id, expiration) VALUES (%s, %s, %s');
+                """,(session_id,user_id,expiration_time)
             )
             conn.commit()
             cur.close()

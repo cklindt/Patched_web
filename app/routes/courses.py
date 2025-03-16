@@ -116,10 +116,11 @@ def add_course():
         with get_db_connection() as conn:
             with conn.cursor() as cur:
                 cur.execute(
-                    f"""
-                    INSERT INTO courses (title, description, instructor_id, image_path) 
-                    VALUES ('{title}', '{description}', '{instructor_id}', '{image_path}')
                     """
+                    INSERT INTO courses (title, description, instructor_id, image_path) 
+                    VALUES (%s,%s,%s,%s)
+                    """,
+                    (title, description, instructor_id, image_path)
                 )
                 conn.commit()
         flash('Course added successfully', 'success')
@@ -148,10 +149,11 @@ def enroll(course_id):
     with get_db_connection() as conn:
         with conn.cursor() as cur:
             cur.execute(
-                f"""
-                INSERT INTO enrollments (student_id, course_id)
-                VALUES ('{student_id}', '{course_id}')
                 """
+                INSERT INTO enrollments (student_id, course_id)
+                VALUES (%s,%s)
+                """,
+                (student_id, course_id)
             )
             conn.commit()
 
@@ -166,10 +168,11 @@ def unroll(course_id):
     with get_db_connection() as conn:
         with conn.cursor() as cur:
             cur.execute(
-                f"""
-                DELETE FROM enrollments WHERE student_id = '{student_id}' AND
-                course_id = '{course_id}'
                 """
+                DELETE FROM enrollments WHERE student_id = %s AND
+                course_id = %s
+                """,
+                (student_id, course_id)
             )
             conn.commit()
 

@@ -36,7 +36,7 @@ def get_user() -> Union[User, None]:
     with get_db_connection() as conn:
         with conn.cursor() as cur:
             cur.execute(
-                f"""
+                """
                 SELECT
                     u.user_id, u.username, s.expiration, u.role
                 FROM

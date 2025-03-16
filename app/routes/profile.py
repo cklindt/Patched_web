@@ -49,11 +49,12 @@ def edit_profile():
             cur = conn.cursor()
 
             cur.execute(
-                f"""
-                UPDATE users
-                SET username = '{username}', password = '{password}'
-                WHERE user_id = '{user.user_id}'
                 """
+                UPDATE users
+                SET username = %s, password = %s
+                WHERE user_id = %s
+                """,
+                (username, password, user.user_id)
             )
             conn.commit()
 

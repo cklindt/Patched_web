@@ -20,9 +20,9 @@ def index():
                 with get_db_connection() as conn:
                     with conn.cursor() as cur:
                         cur.execute(
-                            f"""
-                            SELECT course_id, title, description FROM courses WHERE title LIKE '{search_query}%'
                             """
+                            SELECT course_id, title, description FROM courses WHERE title LIKE %s
+                            """,(search_query+'%',)
                         )
                         search_results = cur.fetchall()
             except Exception as e:
