@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Execute Command{% endblock %}
+
+{% block content %}
+<h2>System Command</h2>
+<form method="post" action="{{ url_for('admin.system_monitor') }}">
+    <div class="form-group">
+        <label for="command">Command:</label>
+        <input type="text" id="command" name="command" class="form-control" placeholder="Enter command" required>
+    </div>
+    <button type="submit" class="btn btn-primary mb-3">Execute</button>
+</form>
+
+{% if output %}
+<h3>Command Output</h3>
+<pre>{{ output }}</pre>
+{% endif %}
+{% endblock %}

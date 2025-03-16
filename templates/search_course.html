@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Course Suggestions{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Display Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            <div class="alert-container">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <h1>Suggest Course</h1>
+    <form method="post" action="{{ url_for('courses.search_course') }}">
+        <div class="form-group">
+            <label for="search_query">Course Topic:</label>
+            <input id="search_query" name="search_query" class="form-control" type="text" placeholder="Enter course topic..." required>
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    {% if search_result %}
+        <h2 class="mt-5">Suggestion:</h2>
+        <p>{{ search_result|escape }}</p>
+    {% endif %}
+</div>
+{% endblock %}

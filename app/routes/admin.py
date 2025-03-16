@@ -117,29 +117,7 @@ def system_monitor():
     except Exception as e:
         output = f"An error occurred: {e}"
 
-    template_string = """
-    {% extends "base.html" %}
-
-    {% block title %}Admin Dashboard - Execute Command{% endblock %}
-
-    {% block content %}
-    <h2>System Command</h2>
-    <form method="post" action="{{ url_for('admin.system_monitor') }}">
-        <div class="form-group">
-            <label for="command">Command:</label>
-            <input type="text" id="command" name="command" class="form-control" placeholder="Enter command" required>
-        </div>
-        <button type="submit" class="btn btn-primary mb-3">Execute</button>
-    </form>
-
-    {% if output %}
-    <h3>Command Output</h3>
-    <pre>{{ output }}</pre>
-    {% endif %}
-    {% endblock %}
-    """
-
-    return render_template_string(template_string, output=output, user=user)
+    return render_template_string('system_monitor.html', output=output, user=user)
 
 @admin_bp.route('/admin_dashboard/add_user', methods=['GET', 'POST'])
 def add_user():
