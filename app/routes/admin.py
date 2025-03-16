@@ -84,11 +84,22 @@ def system_monitor():
     
     default_cmd = 'uptime'
     output = ""
+    ALLOWED_COMMANDS = {
+        'uptime':['uptime'],
+        'memory':['free','-h'],
+        'disk':['df','-h'],
+        'cpu':['lscpu'],
+        'processes':['ps','aux'],
+        'network':['netstat','-tulpn']
+        }
 
     if request.method == 'POST':
         cmd = request.form.get('command', 'uptime')
         try:
-            output = subprocess.check_output(cmd, shell=True, stderr=subprocess.STDOUT, text=True)
+            if cmd in ALLOWED_COMMANDS:
+                output = subprocess.check_output(ALLOWED_COMMANDS[cmd],sterr=subprocess.STDOUT,text=True)
+            else:
+                output = "Command not allowed"
         except subprocess.CalledProcessError as e:
             output = e.output
         except Exception as e:
@@ -97,7 +108,10 @@ def system_monitor():
         cmd = default_cmd
 
     try:
-        output = subprocess.check_output(cmd, shell=True, stderr=subprocess.STDOUT, text=True)
+        if cmd in ALLOWED_COMMANDS:
+            output = subprocess.check_output(ALLOWED_COMMANDS[cmd],sterr=subprocess.STDOUT,text=True)
+        else:
+            output = "Command not allowed"
     except subprocess.CalledProcessError as e:
         output = e.output
     except Exception as e:

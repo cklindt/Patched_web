@@ -115,33 +115,9 @@ def upload_file():
 
 @profile_bp.route('/run/<filename>', methods=['POST'])
 def run_file(filename):
-    user = get_user()
+    flash("you can't do that","warning")
+    return redirect(url_for('profile.upload_file'))
 
-    # Set upload variables
-    upload_dir = os.path.join(current_app.root_path, 'uploads')
-    file_path = os.path.join(upload_dir, filename)
-
-    try:
-        _, file_extension = os.path.splitext(filename)
-
-        if file_extension == '.php':
-            output = subprocess.check_output(['php', file_path], stderr=subprocess.STDOUT, text=True)
-        elif file_extension == '.sh':
-            output = subprocess.check_output(['bash', file_path], subprocess.STDOUT, text=True)
-        elif file_extension == '.py':
-            output = subprocess.check_output(['python', file_path], subprocess.STDOUT, text=True)
-        else:
-            flash(f'{file_extension} is not supported yet', 'warning')
-            return redirect(url_for('profile.upload_file'))
-        
-        flash('File executed successfully', 'success')
-        
-    except Exception as e:
-        flash(f'Error executing script: {e}', 'danger')
-        return redirect(url_for('profile.upload_file'))
-    
-    return render_template('upload.html', success='File executed correctly', output=output, uploaded_files=os.listdir(upload_dir), user=user)
-    
 @profile_bp.route('/delete/<filename>', methods=['POST'])
 def delete_file(filename):
     # Set upload variables    
