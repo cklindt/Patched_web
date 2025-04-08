@@ -1,5 +1,0 @@
----
-- name: Install PostgreSQL Server
-  hosts: postgres_setup
-  roles:
-    - postgres_setup
