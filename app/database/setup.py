@@ -119,8 +119,8 @@ def create_tables():
             random_courses = random.sample(course_ids, min(2, len(course_ids)))
             for course_id in random_courses:
                 cur.execute(f"""INSERT INTO enrollments (student_id, course_id) 
-                    VALUES (%s, %s) ON CONFLICT (student_id, course_id) DO NOTHING"""
-                    % (student_id, course_id)
+                    VALUES (%s, %s) ON CONFLICT (student_id, course_id) DO NOTHING""",
+                    (student_id, course_id)
                 )
             
         cur.close()

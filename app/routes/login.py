@@ -35,7 +35,7 @@ def login():
             
             cur.execute(
                 f"""
-                INSERT INTO sessions (session_id, user_id, expiration) VALUES (%s, %s, %s');
+                INSERT INTO sessions (session_id, user_id, expiration) VALUES (%s, %s, %s);
                 """,(session_id,user_id,expiration_time)
             )
             conn.commit()
