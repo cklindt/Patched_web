@@ -45,7 +45,14 @@ def login():
                 response = redirect(url_for('admin.admin_dashboard'))
             else:
                 response = redirect(url_for('profile.profile'))
-            response.set_cookie("session_id", session_id, expires=expiration_time)
+            response.set_cookie(
+                "session_id", 
+                session_id, 
+                expires=expiration_time,
+                httponly=True,
+                secure=True,
+                samesite='Lax'
+                )
             return response
             
         except Exception as e:
