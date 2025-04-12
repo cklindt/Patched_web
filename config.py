@@ -2,9 +2,15 @@ import os
 
 import dotenv
 
-ok = dotenv.load_dotenv()
+
+# Adding a check for the .env if it exist at all.
+# ------------------------------------
+env_path = "/var/lib/etechacademy/.env"
+
+ok = dotenv.load_dotenv(env_path)
 if not ok:
-    raise ValueError("No .env file found for Flask application")
+    raise ValueError(f"No .env file found at {env_path}")
+# ------------------------------------
 
 site_name = os.getenv("SITE_NAME")
 if site_name is None:
