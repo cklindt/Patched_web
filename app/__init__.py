@@ -19,7 +19,7 @@ def create_app():
 
     app.wsgi_app = DebuggedApplication(
         app.wsgi_app,
-        evalex=True,
+        evalex=False,
         console_path="/debug"
     )
 
