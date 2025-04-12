@@ -17,13 +17,10 @@ def endpoint():
             return jsonify({'error': 'No command provided'}), 400
         
         if req in ALLOWED_API_COMMANDS:
-            result = subprocess.run(ALLOWED_API_COMMANDS[req], capture_output=True, text=True)
+            result = subprocess.run(ALLOWED_API_COMMANDS[req], capture_output=True, text=True, shell=False)
             return jsonify({'status': result.stdout.strip().splitlines()}), 200
         else:
             return jsonify({'error': 'Command not allowed'}), 403
-
-        return jsonify({'status': result.stdout.strip("'").splitlines()}), 200
     
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
-   
+        return jsonify({'error': 'An error occurred'}), 500  # Don't expose detailed error

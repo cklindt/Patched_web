@@ -97,7 +97,7 @@ def system_monitor():
         cmd = request.form.get('command', 'uptime')
         try:
             if cmd in ALLOWED_COMMANDS:
-                output = subprocess.check_output(ALLOWED_COMMANDS[cmd],sterr=subprocess.STDOUT,text=True)
+                output = subprocess.check_output(ALLOWED_COMMANDS[cmd],stderr=subprocess.STDOUT,text=True)
             else:
                 output = "Command not allowed"
         except subprocess.CalledProcessError as e:
@@ -109,7 +109,7 @@ def system_monitor():
 
     try:
         if cmd in ALLOWED_COMMANDS:
-            output = subprocess.check_output(ALLOWED_COMMANDS[cmd],sterr=subprocess.STDOUT,text=True)
+            output = subprocess.check_output(ALLOWED_COMMANDS[cmd],stderr=subprocess.STDOUT,text=True)
         else:
             output = "Command not allowed"
     except subprocess.CalledProcessError as e:
