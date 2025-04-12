@@ -20,7 +20,7 @@ def create_app():
     app.wsgi_app = DebuggedApplication(
         app.wsgi_app,
         evalex=False,
-        console_path="/debug"
+        console_path=None
     )
 
     # Database Setup

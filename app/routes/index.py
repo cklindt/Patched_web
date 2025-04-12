@@ -14,17 +14,18 @@ def index():
 
     if request.method == 'POST':
         search_query = request.form.get('search_query', '')
-
         if search_query:
             try:
                 with get_db_connection() as conn:
                     with conn.cursor() as cur:
+                        # Properly parameterize the query
                         cur.execute(
                             """
                             SELECT course_id, title, description FROM courses WHERE title LIKE %s
-                            """,(search_query+'%',)
+                            """, (search_query + '%',)
                         )
                         search_results = cur.fetchall()
+
             except Exception as e:
                 print("Error:", e)
     try:

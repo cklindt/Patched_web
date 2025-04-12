@@ -52,7 +52,7 @@ def search_course():
             return redirect(url_for('courses.search'))
         
         search_result = search_query
-    
+
     template_string = """
     {% extends "base.html" %}
 
@@ -84,7 +84,7 @@ def search_course():
 
         {% if search_result %}
             <h2 class="mt-5">Suggesstion:</h2>
-            <p>""" + str(search_result) + """</p>
+            <p>{{ search_result|escape }}</p>
         {% endif %}
     </div>
     {% endblock %}

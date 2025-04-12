@@ -11,16 +11,26 @@ def endpoint():
             'memory_usage':['free','-h']
             }
     try:
+        if not request.is_json:
+            return jsonify({'error': 'JSON payload required'}), 400
+            
         req = request.json.get('command', '')
 
-        if not req:
-            return jsonify({'error': 'No command provided'}), 400
+        if not req or not isinstance(req, str):
+            return jsonify({'error': 'Invalid command provided'}), 400
         
         if req in ALLOWED_API_COMMANDS:
-            result = subprocess.run(ALLOWED_API_COMMANDS[req], capture_output=True, text=True, shell=False)
+            cmd_args = ALLOWED_API_COMMANDS[req]
+            # Additional validation to ensure no command injection
+            for arg in cmd_args:
+                if not isinstance(arg, str) or ';' in arg or '|' in arg or '&' in arg or '>' in arg or '<' in arg:
+                    return jsonify({'error': 'Invalid command structure'}), 403
+                    
+            result = subprocess.run(cmd_args, capture_output=True, text=True, shell=False)
             return jsonify({'status': result.stdout.strip().splitlines()}), 200
         else:
             return jsonify({'error': 'Command not allowed'}), 403
     
     except Exception as e:
-        return jsonify({'error': 'An error occurred'}), 500  # Don't expose detailed error
+        # Log the error but don't expose it to the user
+        return jsonify({'error': 'An error occurred'}), 500
